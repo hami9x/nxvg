@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="nxvg" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/nxvg" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/nxvg" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-std=c++11" />
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Linker>
+			<Add option="-lGLEW -lGL -lSDL2" />
+		</Linker>
+		<Unit filename="common.h" />
+		<Unit filename="defs.h" />
+		<Unit filename="framebuffer.cpp" />
+		<Unit filename="framebuffer.h" />
+		<Unit filename="gl.h" />
+		<Unit filename="main.cpp" />
+		<Unit filename="nxvg.cpp" />
+		<Unit filename="nxvg.h" />
+		<Unit filename="nxvg_priv.h" />
+		<Unit filename="shader.cpp" />
+		<Unit filename="shader.h" />
+		<Unit filename="shaders/fill_vshader.glsl" />
+		<Unit filename="shaders/fxaa_fshader.glsl" />
+		<Unit filename="shaders/quadratic_fshader.glsl" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
