@@ -45,13 +45,13 @@ int main(int argc, char* argv[]){
         glClear(GL_COLOR_BUFFER_BIT);
 
         GLfloat pts[] = {
-            -0.2f, -0.2f,
-            0.f, 0.5f,
-            0.5f, -0.3f
+            0.0f, -0.3f,
+            0.1f, -0.46f,
+            -0.2f, -0.5f
         };
 
         int segs[] = {NX_QUADRATIC};
-        nxvgDrawPath(nx, pts, segs, 1, nxvgColor(0.75, 0, 0, 1));
+        nxvgDrawPath(nx, pts, segs, 1, nxvgColor(1, 1, 1, 1));
 
         GLfloat pts2[] = {
             -1.0f, -0.2f,
@@ -59,7 +59,7 @@ int main(int argc, char* argv[]){
         };
 
         int segs2[] = {NX_LINE};
-        nxvgDrawPath(nx, pts2, segs2, 1, nxvgColor(0.75, 0, 0, 1));
+        nxvgDrawPath(nx, pts2, segs2, 1, nxvgColor(1, 1, 1, 1));
 
         SDL_GL_SwapWindow(window);  // Swap the window/buffer to display the result.
         SDL_Delay(10);              // Pause briefly before moving on to the next cycle.

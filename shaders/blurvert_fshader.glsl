@@ -1,25 +1,43 @@
 #version 120
-uniform sampler2D RTScene; // the texture with the scene you want to blur
+uniform sampler2D tex; // the texture with the scene you want to blur
 varying vec2 otexcoord;
 uniform vec2 resolution;
+uniform float weight[5] = float[](1./9, 1./9, 1./9, 1./9, 1./9);
 
 float blurSize = 1/resolution.y;
 
+vec4 blurstep(float offx, float offy, float b) {
+    int offs = int(max(abs(offx), abs(offy)));
+    float multfactor = 1 - b*0*offs;
+    return texture2D(tex, vec2(otexcoord.x+blurSize*offx, otexcoord.y+blurSize*offy))*weight[offs];
+}
+
 void main(void)
 {
-   vec4 sum = vec4(0.0);
+    vec4 sum = vec4(0.0);
 
-   // blur in y (vertical)
-   // take nine samples, with the distance blurSize between them
-   sum += texture2D(RTScene, vec2(otexcoord.x - 4.0*blurSize, otexcoord.y));
-   sum += texture2D(RTScene, vec2(otexcoord.x - 3.0*blurSize, otexcoord.y));
-   sum += texture2D(RTScene, vec2(otexcoord.x - 2.0*blurSize, otexcoord.y));
-   sum += texture2D(RTScene, vec2(otexcoord.x - blurSize, otexcoord.y));
-   sum += texture2D(RTScene, vec2(otexcoord.x, otexcoord.y));
-   sum += texture2D(RTScene, vec2(otexcoord.x + blurSize, otexcoord.y));
-   sum += texture2D(RTScene, vec2(otexcoord.x + 2.0*blurSize, otexcoord.y));
-   sum += texture2D(RTScene, vec2(otexcoord.x + 3.0*blurSize, otexcoord.y));
-   sum += texture2D(RTScene, vec2(otexcoord.x + 4.0*blurSize, otexcoord.y));
+    // blur in y (vertical)
+    // take nine samples, with the distance blurSize between them
+    for (int i=-10; i<=10; i++) {
+        sum += blurstep(0, i, texture2D(tex, vec2(otexcoord.x, otexcoord.y)).b);
+    }
+//    sum += texture2D(RTScene, vec2(otexcoord.x - 4.0*blurSize, otexcoord.y));
+//    sum += texture2D(RTScene, vec2(otexcoord.x - 3.0*blurSize, otexcoord.y));
+//    sum += texture2D(RTScene, vec2(otexcoord.x - 2.0*blurSize, otexcoord.y));
+//    sum += texture2D(RTScene, vec2(otexcoord.x - blurSize, otexcoord.y));
+//
+//    sum += texture2D(RTScene, vec2(otexcoord.x + blurSize, otexcoord.y));
+//    sum += texture2D(RTScene, vec2(otexcoord.x + 2.0*blurSize, otexcoord.y));
+//    sum += texture2D(RTScene, vec2(otexcoord.x + 3.0*blurSize, otexcoord.y));
+//    sum += texture2D(RTScene, vec2(otexcoord.x + 4.0*blurSize, otexcoord.y));
 
-   gl_FragColor = sum/9;
+//    vec4 ccol = texture2D(RTScene, vec2(otexcoord.x, otexcoord.y));
+//    float factor = 7*ccol.b + 1;
+//    if (factor > 1) {
+//        discard;
+//    }
+//    gl_FragColor = (ccol*factor + sum)/(factor+8);
+//    gl_FragColor.b = ccol.b;
+
+    gl_FragColor = sum;
 }

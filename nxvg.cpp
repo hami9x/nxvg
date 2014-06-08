@@ -100,6 +100,43 @@ int gSegSize(NxSegmentType type) {
     return 0;
 }
 
+//class GlCornersConf: ShaderConf {
+//    GLfloat m_cornersx[4];
+//    GLfloat m_cornersy[4];
+//    int m_n;
+//
+//public:
+//    GlCornersConf(int ncorners, GLfloat skip, GLfloat *data) {
+//        m_n = ncorners;
+//        for (int i=0, idx=0; idx<ncorners; i+=skip+2, idx++) {
+//            m_cornersx[idx] = data[i];
+//            m_cornersy[idx] = data[i+1];
+//        }
+////
+////        for (int i=0; i<2; i++) {
+////            printf(": %f, %f\n", m_cornersx[i], m_cornersy[i]);
+////        }
+//    }
+//
+//    virtual void apply(GLuint program) {
+//        GLint loc = glGetUniformLocation(program, "cornersx");
+//        if (loc == -1) {
+//            FAIL("Uniform `cornersx` not available in the program.");
+//        }
+//
+//        //printf("Reso: %f %f %f %f\n", m_Reso.r, m_Reso.g, m_Reso.b, m_Reso.a);
+//        glUniform1fv(loc, m_n, m_cornersx);
+//
+//        loc = glGetUniformLocation(program, "cornersy");
+//        if (loc == -1) {
+//            FAIL("Uniform `cornersy` not available in the program.");
+//        }
+//
+//        //printf("Reso: %f %f %f %f\n", m_Reso.r, m_Reso.g, m_Reso.b, m_Reso.a);
+//        glUniform1fv(loc, m_n, m_cornersy);
+//    }
+//};
+
 void gDrawSegment(Nxvg *ctx, NxSegmentType type, GLfloat *points, int size, NxColor color) {
 //    for (int i=0; i<size; i++) {
 //        printf("%d (%f, %f)\n", i, points[i*2], points[i*2+1]);
@@ -115,6 +152,11 @@ void gDrawSegment(Nxvg *ctx, NxSegmentType type, GLfloat *points, int size, NxCo
     if (type == NX_QUADRATIC) {
         ctx->fbo.bind(); //{
             auto sp = &(ctx->quadSh);
+//            GLfloat corners[] = {
+//                    points[0], points[1],
+//                    points[4], points[5],
+//                };
+//            GlCornersConf cc(2, 0, corners);
             sp->bind(NULL); //{
                 GLfloat vertices[] = {
                     points[0], points[1], 0.0f, 0.0f,
@@ -143,7 +185,7 @@ void gDrawSegment(Nxvg *ctx, NxSegmentType type, GLfloat *points, int size, NxCo
     }
 
     ctx->fbo.bind(); //{
-        for (int i=0; i<2; i++) {
+        for (int i=0; i<1; i++) {
             ctx->fbo.nextPass();
             ctx->blurvSh.bind((ShaderConf *)(&resoConf)); //{
                 drawQuad(ctx->blurvSh);
