@@ -4,9 +4,21 @@
 #include "common.h"
 #include <string>
 
+
+
 class ShaderConf {
 public:
     virtual void apply(GLuint program) = 0;
+};
+
+class ConfApplier {
+    ShaderConf * m_confs[MAX_SHADER_CONFS];
+    int m_len;
+public:
+    ConfApplier(int num, ...);
+    ConfApplier(ShaderConf * conf);
+
+    void apply(GLuint program);
 };
 
 class Program {
@@ -19,7 +31,8 @@ public:
     Program(const char *vshader, const char *fshader);
     ~Program();
 
-    void bind(ShaderConf * conf);
+    void bind(ConfApplier confs);
+    void bind();
     void uploadData(GLfloat *a, int size);
     void drawArray(int start, int num);
     void addAttrib(const char * name, int size, int stride, int offset);

@@ -27,6 +27,8 @@ struct Nxvg {
 
     Program fillSh;
     Program quadSh;
+    Program oblurvSh;
+    Program oblurhSh;
     Program blurvSh;
     Program blurhSh;
     Program simpleSh;

@@ -3,6 +3,7 @@
 #include "shader.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <cstdarg>
 #include <fstream>
 #include <iostream>
 
@@ -73,6 +74,29 @@ GLuint loadShaderFromFile(std::string path, GLenum shaderType) {
     return shaderID;
 }
 
+ConfApplier::ConfApplier(int num, ...) {
+    va_list args;
+    va_start(args, num);
+    m_len = 0;
+
+    for (int i=0; i<num; i++) {
+        m_confs[m_len++] = va_arg(args, ShaderConf *);;
+    }
+
+    va_end(args);
+}
+
+ConfApplier::ConfApplier(ShaderConf * conf) {
+    m_confs[0] = conf;
+    m_len = 1;
+}
+
+void ConfApplier::apply(GLuint program) {
+    for (int i=0; i<m_len; ++i) {
+        m_confs[i]->apply(program);
+    }
+}
+
 Program::Program() {
     m_program = 0;
 }
@@ -103,7 +127,7 @@ Program::~Program() {
     glDeleteBuffers(1, &m_vbo);
 }
 
-void Program::bind(ShaderConf * sc) {
+void Program::bind() {
     if (m_program == 0) {
         FAIL("Program not initialized.");
     }
@@ -111,10 +135,11 @@ void Program::bind(ShaderConf * sc) {
     glUseProgram(m_program);
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
+}
 
-    if (sc != NULL) {
-        sc->apply(m_program);
-    }
+void Program::bind(ConfApplier confs) {
+    bind();
+    confs.apply(m_program);
 }
 
 void Program::addAttrib(const char * name, int size, int stride, int offset) {

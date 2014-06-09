@@ -68,9 +68,11 @@ void Framebuffer::unbind() {
     glBindTexture(GL_TEXTURE_2D, m_texs[m_current]);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
+    glEnable(GL_BLEND);
 }
 
 void Framebuffer::bind() {
+    glDisable(GL_BLEND);
     activateBuffer(m_current);
 }
 

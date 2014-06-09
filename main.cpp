@@ -37,29 +37,31 @@ int main(int argc, char* argv[]){
     // ... can be used alongside SDL2.
     SDL_Event e;
 
-    while(e.type!=SDL_KEYDOWN && e.type!=SDL_QUIT){  // Enter main loop.
-
-        SDL_PollEvent(&e);      // Check for events.
-
-        glClearColor(0,0,0,1);          // Draw with OpenGL.
+    glClearColor(0,0,0,1);          // Draw with OpenGL.
         glClear(GL_COLOR_BUFFER_BIT);
 
-        GLfloat pts[] = {
-            0.0f, -0.3f,
-            0.1f, -0.46f,
-            -0.2f, -0.5f
-        };
-
-        int segs[] = {NX_QUADRATIC};
-        nxvgDrawPath(nx, pts, segs, 1, nxvgColor(1, 1, 1, 1));
-
         GLfloat pts2[] = {
-            -1.0f, -0.2f,
-            -0.5f, 0.1f,
+            -0.6f, -0.2f,
+            -0.2f, 0.5f,
+            -0.5f, -0.9f
         };
 
         int segs2[] = {NX_LINE};
         nxvgDrawPath(nx, pts2, segs2, 1, nxvgColor(1, 1, 1, 1));
+
+
+        GLfloat pts[] = {
+            -0.2f, -0.2f,
+            0.f, 0.5f,
+            -0.5f, -0.23f
+        };
+
+        int segs[] = {NX_QUADRATIC};
+        nxvgDrawPath(nx, pts, segs, 1, nxvgColor(1, 0, 0, 1));
+
+    while(e.type!=SDL_KEYDOWN && e.type!=SDL_QUIT){  // Enter main loop.
+
+        SDL_PollEvent(&e);      // Check for events.
 
         SDL_GL_SwapWindow(window);  // Swap the window/buffer to display the result.
         SDL_Delay(10);              // Pause briefly before moving on to the next cycle.

@@ -8,16 +8,17 @@ float blurSize = 1/resolution.y;
 float blurstep(float offx, float offy) {
     int offs = int(max(abs(offx), abs(offy)));
     vec4 texc = texture2D(tex, vec2(otexcoord.x+blurSize*offx, otexcoord.y+blurSize*offy));
-    return texc.a * 1/9;
+//    if (texc.b >= 0.96 && offs > 2) {
+//        return 0.;
+//    }
+    return texc.a != 0 ? 0.1 : 0.;
 }
 
 void main(void)
 {
     float sum = 0;
 
-    // blur in y (vertical)
-    // take nine samples, with the distance blurSize between them
-    for (int i=-4; i<=4; i++) {
+    for (int i=-3; i<=3; i++) {
         sum += blurstep(0, i);
     }
 

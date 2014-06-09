@@ -52,6 +52,8 @@
 		<Unit filename="shaders/fill_fshader.glsl" />
 		<Unit filename="shaders/fill_vshader.glsl" />
 		<Unit filename="shaders/fxaa_fshader.glsl" />
+		<Unit filename="shaders/oblurh_fshader.glsl" />
+		<Unit filename="shaders/oblurv_fshader.glsl" />
 		<Unit filename="shaders/quadratic_fshader.glsl" />
 		<Unit filename="shaders/simple_fshader.glsl" />
 		<Unit filename="shaders/simple_vshader.glsl" />

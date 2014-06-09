@@ -3,7 +3,7 @@
 #include "nxvg_priv.h"
 
 void uploadFullscreenQuad(Program & sp) {
-    sp.bind(NULL);
+    sp.bind();
     float quad[] = {
         -1.0f,  1.0f, 0.0f, 1.0f,	// top left corner
         -1.0f, -1.0f, 0.0f, 0.0f,	// bottom left corner
@@ -17,6 +17,8 @@ Nxvg::Nxvg(int rx, int ry): fillSh("fill_vshader.glsl", "fill_fshader.glsl"),
             quadSh("fill_vshader.glsl", "quadratic_fshader.glsl"),
             blurvSh("fill_vshader.glsl", "blurvert_fshader.glsl"),
             blurhSh("fill_vshader.glsl", "blurhori_fshader.glsl"),
+            oblurvSh("fill_vshader.glsl", "oblurv_fshader.glsl"),
+            oblurhSh("fill_vshader.glsl", "oblurh_fshader.glsl"),
             simpleSh("simple_vshader.glsl", "simple_fshader.glsl"),
             fbo(rx, ry)
 {
@@ -24,7 +26,7 @@ Nxvg::Nxvg(int rx, int ry): fillSh("fill_vshader.glsl", "fill_fshader.glsl"),
     resY = ry;
 
     auto basicAttrs = [](Program & sp) {
-        sp.bind(NULL);
+        sp.bind();
         sp.addAttrib("position", 2, 4, 0);
         sp.addAttrib("texcoord", 2, 4, 2);
     };
@@ -32,11 +34,15 @@ Nxvg::Nxvg(int rx, int ry): fillSh("fill_vshader.glsl", "fill_fshader.glsl"),
     basicAttrs(quadSh);
     basicAttrs(blurhSh);
     basicAttrs(blurvSh);
-    simpleSh.bind(NULL); simpleSh.addAttrib("position", 2, 2, 0);
+    basicAttrs(oblurhSh);
+    basicAttrs(oblurvSh);
+    simpleSh.bind(); simpleSh.addAttrib("position", 2, 2, 0);
 
     uploadFullscreenQuad(fillSh);
     uploadFullscreenQuad(blurhSh);
     uploadFullscreenQuad(blurvSh);
+    uploadFullscreenQuad(oblurhSh);
+    uploadFullscreenQuad(oblurvSh);
 }
 
 GlColorConf::GlColorConf(NxColor color) {
@@ -91,7 +97,7 @@ NxColor nxvgColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
 
 int gSegSize(NxSegmentType type) {
     switch (type) {
-    case NX_LINE: return 2;
+    case NX_LINE: return 3;
     case NX_QUADRATIC: return 3;
     case NX_BEZIER: return 4;
     }
@@ -112,10 +118,10 @@ int gSegSize(NxSegmentType type) {
 //            m_cornersx[idx] = data[i];
 //            m_cornersy[idx] = data[i+1];
 //        }
-////
-////        for (int i=0; i<2; i++) {
-////            printf(": %f, %f\n", m_cornersx[i], m_cornersy[i]);
-////        }
+//
+//        for (int i=0; i<3; i++) {
+//            printf(": %f, %f\n", m_cornersx[i], m_cornersy[i]);
+//        }
 //    }
 //
 //    virtual void apply(GLuint program) {
@@ -124,7 +130,7 @@ int gSegSize(NxSegmentType type) {
 //            FAIL("Uniform `cornersx` not available in the program.");
 //        }
 //
-//        //printf("Reso: %f %f %f %f\n", m_Reso.r, m_Reso.g, m_Reso.b, m_Reso.a);
+//        printf("Reso: %f %f %f %f\n", m_Reso.r, m_Reso.g, m_Reso.b, m_Reso.a);
 //        glUniform1fv(loc, m_n, m_cornersx);
 //
 //        loc = glGetUniformLocation(program, "cornersy");
@@ -132,7 +138,7 @@ int gSegSize(NxSegmentType type) {
 //            FAIL("Uniform `cornersy` not available in the program.");
 //        }
 //
-//        //printf("Reso: %f %f %f %f\n", m_Reso.r, m_Reso.g, m_Reso.b, m_Reso.a);
+//        printf("Reso: %f %f %f %f\n", m_Reso.r, m_Reso.g, m_Reso.b, m_Reso.a);
 //        glUniform1fv(loc, m_n, m_cornersy);
 //    }
 //};
@@ -142,22 +148,20 @@ void gDrawSegment(Nxvg *ctx, NxSegmentType type, GLfloat *points, int size, NxCo
 //        printf("%d (%f, %f)\n", i, points[i*2], points[i*2+1]);
 //    }
     GlColorConf colorConf(color);
+    GlColorConf rcolorConf(nxvgColor(1, 0, 0, 1));
+    GlColorConf dcolorConf(nxvgColor(0, 0, 0, 1));
     GlResoConf resoConf(ctx->resX, ctx->resY);
     auto drawQuad = [] (Program & sp) {
         sp.drawArray(0, 3);
         sp.drawArray(1, 3);
     };
+
     ctx->fbo.clear();
 
     if (type == NX_QUADRATIC) {
         ctx->fbo.bind(); //{
             auto sp = &(ctx->quadSh);
-//            GLfloat corners[] = {
-//                    points[0], points[1],
-//                    points[4], points[5],
-//                };
-//            GlCornersConf cc(2, 0, corners);
-            sp->bind(NULL); //{
+            sp->bind(); //{
                 GLfloat vertices[] = {
                     points[0], points[1], 0.0f, 0.0f,
                     points[2], points[3], 0.5f, 0.0f,
@@ -169,14 +173,24 @@ void gDrawSegment(Nxvg *ctx, NxSegmentType type, GLfloat *points, int size, NxCo
         //}
         ctx->fbo.unbind();
     } else if (type == NX_LINE) {
-        ctx->fbo.bind(); //{
+//        ctx->fbo.bind(); //{
+//            GLfloat corners[] = {
+//                    points[0], points[1],
+//                    points[2], points[3],
+//                    points[4], points[5],
+//                };
+//            GlCornersConf cc(3, 0, corners);
+
             auto sp = &(ctx->simpleSh);
-            sp->bind(NULL); //{
+            sp->bind(&dcolorConf); //{
                 GLfloat vertices[] = {
                     points[0], points[1],
                     points[2], points[3],
                     points[4], points[5],
                 };
+//                for (int i=0; i<3; i++) {
+//                    printf("v: %f %f\n", points[i*2], points[i*2+1]);
+//                }
                 sp->uploadData(vertices, sizeof(vertices));
                 sp->drawArray(0, 3);
             //}
@@ -185,22 +199,41 @@ void gDrawSegment(Nxvg *ctx, NxSegmentType type, GLfloat *points, int size, NxCo
     }
 
     ctx->fbo.bind(); //{
-        for (int i=0; i<1; i++) {
+        ctx->fbo.nextPass();
+        ctx->oblurvSh.bind(&resoConf); //{
+            drawQuad(ctx->oblurvSh);
+        //}
+        ctx->fbo.nextPass();
+        ctx->oblurhSh.bind(&resoConf); //{
+            drawQuad(ctx->oblurhSh);
+        //}
+        for (int i=0; i<2; i++) {
+            //continue;
             ctx->fbo.nextPass();
-            ctx->blurvSh.bind((ShaderConf *)(&resoConf)); //{
+            ctx->blurvSh.bind(&resoConf); //{
                 drawQuad(ctx->blurvSh);
             //}
             ctx->fbo.nextPass();
-            ctx->blurhSh.bind((ShaderConf *)(&resoConf)); //{
+            ctx->blurhSh.bind(&resoConf); //{
                 drawQuad(ctx->blurhSh);
             //}
         }
     //}
     ctx->fbo.unbind();
 
-    ctx->fillSh.bind((ShaderConf *)(&colorConf)); //{
+    ctx->fillSh.bind(&colorConf); //{
             drawQuad(ctx->fillSh);
     //}
+
+//    auto sp = &(ctx->simpleSh);
+//    sp->bind(&rcolorConf); //{
+//        GLfloat vertices[] = {
+//            points[0], points[1],
+//            points[2], points[3],
+//            points[4], points[5],
+//        };
+//    sp->uploadData(vertices, sizeof(vertices));
+//    sp->drawArray(0, 3);
 }
 
 void nxvgDrawPath(void *ctx, GLfloat *points, NxSegmentType *types, int seglen, NxColor color) {
