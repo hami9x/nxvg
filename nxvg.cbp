@@ -12,7 +12,11 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
+					<Add option="-Weffc++" />
+					<Add option="-pedantic-errors" />
+					<Add option="-pedantic" />
 					<Add option="-g" />
+					<Add option="-D_GLIBCXX_DEBUG" />
 				</Compiler>
 			</Target>
 			<Target title="Release">
@@ -36,27 +40,28 @@
 		<Linker>
 			<Add option="-lGLEW -lGL -lSDL2" />
 		</Linker>
+		<Unit filename="bluaa.cpp" />
+		<Unit filename="bluaa.h" />
 		<Unit filename="common.h" />
+		<Unit filename="context.cpp" />
+		<Unit filename="context.h" />
 		<Unit filename="defs.h" />
+		<Unit filename="draw.cpp" />
+		<Unit filename="draw.h" />
 		<Unit filename="framebuffer.cpp" />
 		<Unit filename="framebuffer.h" />
 		<Unit filename="gl.h" />
 		<Unit filename="main.cpp" />
 		<Unit filename="nxvg.cpp" />
 		<Unit filename="nxvg.h" />
-		<Unit filename="nxvg_priv.h" />
 		<Unit filename="shader.cpp" />
 		<Unit filename="shader.h" />
-		<Unit filename="shaders/blurhori_fshader.glsl" />
-		<Unit filename="shaders/blurvert_fshader.glsl" />
-		<Unit filename="shaders/fill_fshader.glsl" />
-		<Unit filename="shaders/fill_vshader.glsl" />
-		<Unit filename="shaders/fxaa_fshader.glsl" />
-		<Unit filename="shaders/oblurh_fshader.glsl" />
-		<Unit filename="shaders/oblurv_fshader.glsl" />
-		<Unit filename="shaders/quadratic_fshader.glsl" />
-		<Unit filename="shaders/simple_fshader.glsl" />
-		<Unit filename="shaders/simple_vshader.glsl" />
+		<Unit filename="shaders/fs_bluaa.glsl" />
+		<Unit filename="shaders/fs_fill.glsl" />
+		<Unit filename="shaders/fs_nothing.glsl" />
+		<Unit filename="shaders/fs_quadratic.glsl" />
+		<Unit filename="shaders/vs_pos.glsl" />
+		<Unit filename="shaders/vs_postex.glsl" />
 		<Extensions>
 			<code_completion />
 			<debugger />

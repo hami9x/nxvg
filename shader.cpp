@@ -74,26 +74,25 @@ GLuint loadShaderFromFile(std::string path, GLenum shaderType) {
     return shaderID;
 }
 
-ConfApplier::ConfApplier(int num, ...) {
+int ConfApplier::MAX_SHADER_CONFS = 8;
+
+ConfApplier::ConfApplier(int num, ...): m_confs(num, NULL) {
     va_list args;
     va_start(args, num);
-    m_len = 0;
 
     for (int i=0; i<num; i++) {
-        m_confs[m_len++] = va_arg(args, ShaderConf *);;
+        m_confs[i] = va_arg(args, ShaderConf *);
     }
 
     va_end(args);
 }
 
-ConfApplier::ConfApplier(ShaderConf * conf) {
-    m_confs[0] = conf;
-    m_len = 1;
+inline ConfApplier::ConfApplier(ShaderConf * conf): m_confs(1, conf) {
 }
 
-void ConfApplier::apply(GLuint program) {
-    for (int i=0; i<m_len; ++i) {
-        m_confs[i]->apply(program);
+inline void ConfApplier::apply(GLuint program) {
+    for (auto conf: m_confs) {
+        conf->apply(program);
     }
 }
 

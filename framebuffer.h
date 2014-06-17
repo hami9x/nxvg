@@ -1,5 +1,5 @@
-#ifndef FRAMEBUFFER_H_INCLUDED
-#define FRAMEBUFFER_H_INCLUDED
+#ifndef NXVG_FRAMEBUFFER_H_INCLUDED
+#define NXVG_FRAMEBUFFER_H_INCLUDED
 #include "common.h"
 
 class Framebuffer {

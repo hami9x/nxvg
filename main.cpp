@@ -38,26 +38,26 @@ int main(int argc, char* argv[]){
     SDL_Event e;
 
     glClearColor(0,0,0,1);          // Draw with OpenGL.
-        glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
 
-        GLfloat pts2[] = {
-            -0.6f, -0.2f,
-            -0.2f, 0.5f,
-            -0.5f, -0.9f
-        };
+//    GLfloat pts2[] = {
+//        -0.6f, -0.2f,
+//        -0.2f, 0.5f,
+//        -0.5f, -0.9f
+//    };
+//
+//    int segs2[] = {NX_LINE};
+//    nxvgDrawPath(nx, pts2, segs2, 1, nxvgColor(1, 1, 1, 1));
 
-        int segs2[] = {NX_LINE};
-        nxvgDrawPath(nx, pts2, segs2, 1, nxvgColor(1, 1, 1, 1));
 
+    GLfloat pts[] = {
+        -0.2f, -0.2f,
+        0.f, 0.5f,
+        -0.5f, -0.23f
+    };
 
-        GLfloat pts[] = {
-            -0.2f, -0.2f,
-            0.f, 0.5f,
-            -0.5f, -0.23f
-        };
-
-        int segs[] = {NX_QUADRATIC};
-        nxvgDrawPath(nx, pts, segs, 1, nxvgColor(1, 0, 0, 1));
+    int segs[] = {NX_QUADRATIC};
+    nxvgDrawPath(nx, pts, segs, 1, nxvgColor(1, 0, 0, 1));
 
     while(e.type!=SDL_KEYDOWN && e.type!=SDL_QUIT){  // Enter main loop.
 

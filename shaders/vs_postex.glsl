@@ -2,12 +2,12 @@
 
 attribute vec2 position;
 attribute vec2 texcoord;
-varying vec2 otexcoord;
-varying vec2 pos;
+varying vec2 _texcoord;
+varying vec2 _pos;
 
 void main()
 {
-    otexcoord = texcoord;
-    pos = position;
+    _texcoord = texcoord;
+    _pos = position;
     gl_Position = vec4(position, 0, 1.0);
 }

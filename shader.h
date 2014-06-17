@@ -1,10 +1,8 @@
-#ifndef SHADER_H_INCLUDED
-#define SHADER_H_INCLUDED
+#ifndef NXVG_SHADER_H_INCLUDED
+#define NXVG_SHADER_H_INCLUDED
 
 #include "common.h"
 #include <string>
-
-
 
 class ShaderConf {
 public:
@@ -12,8 +10,9 @@ public:
 };
 
 class ConfApplier {
-    ShaderConf * m_confs[MAX_SHADER_CONFS];
-    int m_len;
+    vector<ShaderConf *> m_confs;
+    static const MAX_SHADER_CONFS;
+
 public:
     ConfApplier(int num, ...);
     ConfApplier(ShaderConf * conf);
