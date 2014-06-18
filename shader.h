@@ -2,22 +2,12 @@
 #define NXVG_SHADER_H_INCLUDED
 
 #include "common.h"
+#include <vector>
 #include <string>
 
 class ShaderConf {
 public:
-    virtual void apply(GLuint program) = 0;
-};
-
-class ConfApplier {
-    vector<ShaderConf *> m_confs;
-    static const MAX_SHADER_CONFS;
-
-public:
-    ConfApplier(int num, ...);
-    ConfApplier(ShaderConf * conf);
-
-    void apply(GLuint program);
+    virtual void apply(GLuint program) const = 0;
 };
 
 class Program {
@@ -30,11 +20,12 @@ public:
     Program(const char *vshader, const char *fshader);
     ~Program();
 
-    void bind(ConfApplier confs);
-    void bind();
-    void uploadData(GLfloat *a, int size);
-    void drawArray(int start, int num);
-    void addAttrib(const char * name, int size, int stride, int offset);
+    void bind(const ShaderConf & confs) const;
+    void bind(const std::vector<ShaderConf> & confs) const;
+    void bind() const;
+    void uploadData(GLfloat *a, int size) const;
+    void drawArray(int start, int num) const;
+    void addAttrib(const char * name, int size, int stride, int offset) const;
 };
 
 #endif

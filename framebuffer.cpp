@@ -64,7 +64,7 @@ Framebuffer::Framebuffer(int w, int h) {
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
 }
 
-void Framebuffer::unbind() {
+void Framebuffer::unbind() const {
     glBindTexture(GL_TEXTURE_2D, m_texs[m_current]);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);

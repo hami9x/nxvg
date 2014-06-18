@@ -1,51 +1,67 @@
 #ifndef NXVG_DRAW_H_INCLUDED
 #define NXVG_DRAW_H_INCLUDED
+#include <array>
+#include <vector>
+#include <memory>
+#include <glm/vec2.hpp>
 
 #include "common.h"
 
 class Context;
 
-namespace glm {
-    class vec2;
-}
+using glm::vec2;
 
 class Stenciler {
-    virtual void stencil() = 0;
-}
+public:
+    virtual void stencil(const Context * const ctx) const = 0;
+};
 
 class QuadraticCurve: public Stenciler {
-    const glm::vec2 m_points[3];
+    const std::array<vec2, 3> m_points;
 
 public:
-    QuadraticCurve(GLfloat const * const dataptr);
+    QuadraticCurve(GLfloat const * const p):
+        m_points({vec2(p[0], p[1]), vec2(p[2], p[3]), vec2(p[4], p[5])})
+    {}
 
-    virtual void stencil(const Context * const sp);
+
+    virtual void stencil(const Context * const ctx) const;
 };
 
 class CubicCurve: public Stenciler {
-    const glm::vec2 m_points[4];
+    const std::array<vec2, 4> m_points;
 
 public:
-    CubicCurve(GLfloat const * const dataptr);
+    CubicCurve(GLfloat const * const p):
+        m_points({
+            vec2(p[0], p[1]),
+            vec2(p[2], p[3]),
+            vec2(p[4], p[5]),
+            vec2(p[6], p[7])
+        })
+    {}
 
-    virtual void stencil(const Context * const sp);
+    virtual void stencil(const Context * const sp) const;
 };
 
 class FillerPoly: public Stenciler {
-    vector<glm::vec2> m_points;
-    FillerPoly(GLfloat const * const startPtr);
-
-    void addPoint(GLfloat const * const dataPtr);
-
-    virtual void stencil(const Context * const sp);
-}
-
-class Drawer {
-    const Context * const m_ctx;
+    std::vector<vec2> m_points;
 
 public:
-    typedef vector<unique_ptr<Stenciler>> SegmentList;
-    void drawPath(const SegmentList & segs);
+    inline FillerPoly(GLfloat const * const startPtr): m_points(1, vec2(startPtr[0], startPtr[1])) {}
+
+    inline void addPoint(GLfloat const * const p) { m_points.push_back(vec2(p[0], p[1])); };
+
+    virtual void stencil(const Context * const sp) const;
+};
+
+class Drawer {
+    Context * const m_ctx;
+
+public:
+    inline Drawer(Context * ctx): m_ctx(ctx) {}
+    typedef std::vector<std::unique_ptr<Stenciler>> SegmentList;
+    void drawPath(const Drawer::SegmentList & segs, const NxColor & color) const;
 };
 
 #endif

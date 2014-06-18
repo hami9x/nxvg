@@ -6,27 +6,27 @@
 #include "draw.h"
 
 class GlColorConf: public ShaderConf {
-    NxColor m_color;
+    const NxColor m_color;
 
 public:
-    GlColorConf(NxColor color);
-    virtual void apply(GLuint program);
+    inline GlColorConf(const NxColor & color): m_color(color) {}
+    virtual void apply(GLuint program) const;
 };
 
 class GlResoConf: public ShaderConf {
-    int m_x;
-    int m_y;
+    const int m_x;
+    const int m_y;
 public:
-    GlResoConf(int x, int y);
-    virtual void apply(GLuint program);
+    inline GlResoConf(int x, int y): m_x(x), m_y(y) {}
+    virtual void apply(GLuint program) const;
 };
 
 class Context {
-    int m_resx;
-    int m_resy;
+    const int m_resx;
+    const int m_resy;
     Framebuffer m_fbo;
     const GlResoConf m_reso_conf;
-    Drawer m_drawer;
+    const Drawer m_drawer;
 
 public:
     Context(int rx, int ry);
@@ -35,9 +35,11 @@ public:
     const Program m_aa_shader;
     const Program m_nothing_shader;
 
-    inline Framebuffer & fbo() const { return m_fbo; }
+    inline Framebuffer & fbo() { return m_fbo; }
     inline const GlResoConf & resoConf() const { return m_reso_conf; }
     inline const Drawer & drawer() const { return m_drawer; }
 };
+
+void drawFullscreenQuad(const Program & sp);
 
 #endif // NXVGPRIV_H_INCLUDED

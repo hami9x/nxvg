@@ -6,7 +6,7 @@
 
 using namespace std;
 
-void glSetup(Nxvg *nxvg) {
+void glSetup(Context *nxvg) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
     glDisable(GL_DEPTH_TEST);
@@ -19,7 +19,7 @@ void* nxvgNew(int resX, int resY) {
 }
 
 void nxvgDelete(void *ctx) {
-    delete ctx;
+    delete (Context *)(ctx);
 }
 
 NxColor nxvgColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
@@ -50,15 +50,15 @@ void nxvgDrawPath(void *ctx, GLfloat *coords, NxSegmentType *types, int seglen, 
         if (type == NX_QUADRATIC) {
             seg = new QuadraticCurve(coords-2);
             coords+=2;
-            fp.addPoint(coords);
+            fp->addPoint(coords);
             coords+=2;
         } else if (type == NX_BEZIER) {
             seg = new CubicCurve(coords-2);
             coords+=4;
-            fp.addPoint(coords);
+            fp->addPoint(coords);
             coords+=2;
         } else if (type == NX_LINE) {
-            fp.addPoint(coords);
+            fp->addPoint(coords);
             coords+=2;
         }
         segments.push_back(unique_ptr<Stenciler>(seg));

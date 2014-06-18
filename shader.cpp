@@ -74,33 +74,10 @@ GLuint loadShaderFromFile(std::string path, GLenum shaderType) {
     return shaderID;
 }
 
-int ConfApplier::MAX_SHADER_CONFS = 8;
-
-ConfApplier::ConfApplier(int num, ...): m_confs(num, NULL) {
-    va_list args;
-    va_start(args, num);
-
-    for (int i=0; i<num; i++) {
-        m_confs[i] = va_arg(args, ShaderConf *);
-    }
-
-    va_end(args);
+Program::Program(): m_program(0), m_vao(0), m_vbo(0) {
 }
 
-inline ConfApplier::ConfApplier(ShaderConf * conf): m_confs(1, conf) {
-}
-
-inline void ConfApplier::apply(GLuint program) {
-    for (auto conf: m_confs) {
-        conf->apply(program);
-    }
-}
-
-Program::Program() {
-    m_program = 0;
-}
-
-Program::Program(const char *vshader, const char *fshader) {
+Program::Program(const char *vshader, const char *fshader): m_program(0), m_vao(0), m_vbo(0) {
     std::string shaderBase("shaders/");
     glGenVertexArrays(1, &m_vao);
 
@@ -126,7 +103,7 @@ Program::~Program() {
     glDeleteBuffers(1, &m_vbo);
 }
 
-void Program::bind() {
+void Program::bind() const {
     if (m_program == 0) {
         FAIL("Program not initialized.");
     }
@@ -136,21 +113,28 @@ void Program::bind() {
     glBindBuffer(GL_ARRAY_BUFFER, m_vbo);
 }
 
-void Program::bind(ConfApplier confs) {
+void Program::bind(const ShaderConf & conf) const {
     bind();
-    confs.apply(m_program);
+    conf.apply(m_program);
 }
 
-void Program::addAttrib(const char * name, int size, int stride, int offset) {
+void Program::bind(const vector<ShaderConf> & confs) const {
+    bind();
+    for (auto & conf: confs) {
+        conf.apply(m_program);
+    }
+}
+
+void Program::addAttrib(const char * name, int size, int stride, int offset) const {
     GLint attr = glGetAttribLocation(m_program, name);
     glVertexAttribPointer(attr, size, GL_FLOAT, GL_FALSE, stride*sizeof(GLfloat), (void*)(offset*sizeof(GLfloat)));
     glEnableVertexAttribArray(attr);
 }
 
-void Program::uploadData(GLfloat * a, int size) {
+void Program::uploadData(GLfloat * a, int size) const {
     glBufferData(GL_ARRAY_BUFFER, size, a, GL_STATIC_DRAW);
 }
 
-void Program::drawArray(int start, int num) {
+void Program::drawArray(int start, int num) const {
     glDrawArrays(GL_TRIANGLES, start, num);
 }

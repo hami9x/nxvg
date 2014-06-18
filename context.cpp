@@ -1,6 +1,5 @@
-#include "nxvg.h"
+#include "context.h"
 #include "common.h"
-#include "nxvg_priv.h"
 
 void uploadFullscreenQuad(const Program & sp) {
     sp.bind();
@@ -13,26 +12,31 @@ void uploadFullscreenQuad(const Program & sp) {
     sp.uploadData(quad, sizeof(quad));
 }
 
+void drawFullscreenQuad(const Program & sp) {
+    sp.drawArray(0, 3);
+    sp.drawArray(1, 3);
+}
+
 Context::Context(int rx, int ry):
         m_resx(rx),
-        m_rexy(ry),
+        m_resy(ry),
         m_fbo(rx, ry),
         m_reso_conf(rx, ry),
-        m_draw(this),
+        m_drawer(this),
         m_fill_shader("vs_postex.glsl", "fs_fill.glsl"),
         m_quad_shader("vs_postex.glsl", "fs_quadratic.glsl"),
         m_aa_shader("vs_postex.glsl", "fs_bluaa.glsl"),
-        m_nothing_shader("vs_pos.glsl", "fs_nothing.glsl"),
+        m_nothing_shader("vs_pos.glsl", "fs_nothing.glsl")
 {
-    auto postexAttrs = [](Program & sp) {
+    auto postexAttrs = [](const Program & sp) {
         sp.bind();
         sp.addAttrib("position", 2, 4, 0);
         sp.addAttrib("texcoord", 2, 4, 2);
     };
-    auto posAttrs = [](Program & sp) {
+    auto posAttrs = [](const Program & sp) {
         sp.bind();
         sp.addAttrib("position", 2, 2, 0);
-    }
+    };
 
     postexAttrs(m_fill_shader);
     postexAttrs(m_quad_shader);
@@ -43,11 +47,7 @@ Context::Context(int rx, int ry):
     uploadFullscreenQuad(m_aa_shader);
 }
 
-GlColorConf::GlColorConf(NxColor color) {
-    m_color = color;
-}
-
-void GlColorConf::apply(GLuint program) {
+void GlColorConf::apply(GLuint program) const {
     GLint loc = glGetUniformLocation(program, "color");
     if (loc == -1) {
         FAIL("Uniform `color` not available in the program.");
@@ -57,12 +57,7 @@ void GlColorConf::apply(GLuint program) {
     glUniform4f(loc, m_color.r, m_color.g, m_color.b, m_color.a);
 }
 
-GlResoConf::GlResoConf(int x, int y) {
-    m_x = x;
-    m_y = y;
-}
-
-void GlResoConf::apply(GLuint program) {
+void GlResoConf::apply(GLuint program) const {
     GLint loc = glGetUniformLocation(program, "resolution");
     if (loc == -1) {
         FAIL("Uniform `resolution` not available in the program.");

@@ -1,1 +1,17 @@
-./etcd -peer-addr 127.0.0.1:7001 -addr 127.0.0.1:4001 -data-dir machines/machine1 -name machine1
+#ifndef BLUAA_H_INCLUDED
+#define BLUAA_H_INCLUDED
+#include "shader.h"
+
+class Context;
+
+class GlModeConf: public ShaderConf {
+    int m_mode;
+public:
+    inline GlModeConf(int mode): m_mode(mode) {}
+
+    virtual void apply(GLuint program) const;
+};
+
+void aaProcess(Context *ctx);
+
+#endif

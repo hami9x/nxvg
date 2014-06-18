@@ -17,7 +17,7 @@ public:
     Framebuffer(int width, int height);
 
     void bind();
-    void unbind();
+    void unbind() const;
     void nextPass();
     void clear();
 };

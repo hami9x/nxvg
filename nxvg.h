@@ -20,7 +20,6 @@ extern "C" {
 
 #include "defs.h"
 #include "gl.h"
-#include "shader.h"
 
 //API
 #define NX_LINE 1
