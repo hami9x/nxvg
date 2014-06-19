@@ -17,15 +17,15 @@ void Framebuffer::nextPass() {
     activateBuffer(1-m_current);
 }
 
-Framebuffer::Framebuffer(int w, int h) {
-    m_w = w;
-    m_h = h;
-    m_current = 0;
-
+Framebuffer::Framebuffer(int w, int h):
+    m_w(w),
+    m_h(h),
+    m_current(0)
+{
     for (int i=0; i<=1; i++) {
-        GLuint FramebufferName = 0;
-        glGenFramebuffers(1, &FramebufferName);
-        glBindFramebuffer(GL_FRAMEBUFFER, FramebufferName);
+        GLuint framebufferName = 0;
+        glGenFramebuffers(1, &framebufferName);
+        glBindFramebuffer(GL_FRAMEBUFFER, framebufferName);
 
         // The texture we're going to render to
         GLuint renderedTexture;
@@ -45,9 +45,9 @@ Framebuffer::Framebuffer(int w, int h) {
         GLuint depthrenderbuffer;
         glGenRenderbuffers(1, &depthrenderbuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, depthrenderbuffer);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, w, h);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, w, h);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
-
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthrenderbuffer);
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderedTexture, 0);
 
         if(glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) {
@@ -55,7 +55,7 @@ Framebuffer::Framebuffer(int w, int h) {
             exit(EXIT_FAILURE);
         }
 
-        m_fbos[i] = FramebufferName;
+        m_fbos[i] = framebufferName;
         m_rbos[i] = depthrenderbuffer;
         m_texs[i] = renderedTexture;
     }
@@ -80,4 +80,5 @@ void Framebuffer::clear() {
     activateBuffer(m_current);
     glClearColor(0, 0, 0, 0);
     glClear(GL_COLOR_BUFFER_BIT);
+    unbind();
 }

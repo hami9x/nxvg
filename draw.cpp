@@ -24,16 +24,47 @@ void FillerPoly::stencil(const Context * const ctx) const {
 }
 
 void Drawer::drawPath(const Drawer::SegmentList & segs, const NxColor & color) const {
-    //activate stencil here
+    glStencilMask(0xff);
+    glClearStencil(0);
+
+    auto & fbo = m_ctx->fbo();
+
+    //! start FBO bind
+    fbo.clear();
+    fbo.bind();
+
+    glStencilMask(0xff);
+    //stencil step
+    glColorMask(GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+    glStencilFunc(GL_ALWAYS, 0, 0xff);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_INVERT);
     for (auto & seg: segs) {
         seg->stencil(m_ctx);
     }
+    glColorMask(GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
 
-    GlColorConf cc(color);
 
-    auto & fbo = m_ctx->fbo();
-    fbo.clear();
+    //fill the stenciled area
+    glStencilFunc(GL_LESS, 0, 0xff);
+    auto & nsp = m_ctx->m_nothing_shader;
+    nsp.bind();
+    float quad[] = {
+        -1.0f,  1.0f,	// top left corner
+        -1.0f, -1.0f,	// bottom left corner
+         1.0f,  1.0f,   // top right corner
+         1.0f, -1.0f	// bottom right corner
+    };
+    nsp.uploadData(quad, sizeof(quad));
+    draw0313(nsp);
 
+    glStencilFunc(GL_ALWAYS, 0, 0xff);
+    fbo.nextPass();
     aaProcess(m_ctx);
-    drawFullscreenQuad(m_ctx->m_fill_shader);
+    fbo.unbind();
+    //! end of FBO bind
+
+    //antialiasing and fill to the screen
+    glStencilFunc(GL_ALWAYS, 0, 0xff);
+    GlColorConf cc(color);
+    m_ctx->m_fill_shader.bind(cc); draw0313(m_ctx->m_fill_shader);
 }

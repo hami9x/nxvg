@@ -6,15 +6,16 @@
 
 using namespace std;
 
-void glSetup(Context *nxvg) {
+void glSetup() {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_BLEND);
-    glDisable(GL_DEPTH_TEST);
+    glEnable(GL_STENCIL_TEST);
+    //glEnable(GL_DEPTH_TEST);
 }
 
 void* nxvgNew(int resX, int resY) {
     Context *nxvg = new Context(resX, resY);
-    glSetup(nxvg);
+    glSetup();
     return (void*)(nxvg);
 }
 

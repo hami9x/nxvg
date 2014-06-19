@@ -12,7 +12,7 @@ void uploadFullscreenQuad(const Program & sp) {
     sp.uploadData(quad, sizeof(quad));
 }
 
-void drawFullscreenQuad(const Program & sp) {
+void draw0313(const Program & sp) {
     sp.drawArray(0, 3);
     sp.drawArray(1, 3);
 }

@@ -118,10 +118,10 @@ void Program::bind(const ShaderConf & conf) const {
     conf.apply(m_program);
 }
 
-void Program::bind(const vector<ShaderConf> & confs) const {
+void Program::bind(const vector<const ShaderConf *> & confs) const {
     bind();
     for (auto & conf: confs) {
-        conf.apply(m_program);
+        conf->apply(m_program);
     }
 }
 

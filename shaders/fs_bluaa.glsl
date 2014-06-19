@@ -13,7 +13,7 @@ float blurstep(float offx, float offy) {
     int offs = int(max(abs(offx), abs(offy)));
     vec4 texc = texture2D(tex, vec2(_texcoord.x+blurSize*offx, _texcoord.y+blurSize*offy));
     if (solid) {
-        return texc.a != 0 ? 0.1 : 0;
+        return texc.a != 0 ? 1.0 : 0;
     }
     return texc.a * 1/9;
 }

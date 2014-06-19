@@ -21,7 +21,7 @@ public:
     ~Program();
 
     void bind(const ShaderConf & confs) const;
-    void bind(const std::vector<ShaderConf> & confs) const;
+    void bind(const std::vector<const ShaderConf *> & confs) const;
     void bind() const;
     void uploadData(GLfloat *a, int size) const;
     void drawArray(int start, int num) const;

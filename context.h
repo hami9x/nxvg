@@ -36,10 +36,11 @@ public:
     const Program m_nothing_shader;
 
     inline Framebuffer & fbo() { return m_fbo; }
-    inline const GlResoConf & resoConf() const { return m_reso_conf; }
+    inline const GlResoConf * resoConf() const { return &m_reso_conf; }
     inline const Drawer & drawer() const { return m_drawer; }
 };
 
-void drawFullscreenQuad(const Program & sp);
+void uploadFullscreenQuad(const Program & sp);
+void draw0313(const Program & sp);
 
 #endif // NXVGPRIV_H_INCLUDED
