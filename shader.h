@@ -26,6 +26,7 @@ public:
     void uploadData(GLfloat *a, int size) const;
     void drawArray(int start, int num) const;
     void addAttrib(const char * name, int size, int stride, int offset) const;
+    GLuint program() const { return m_program; }
 };
 
 #endif

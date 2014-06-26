@@ -1,7 +1,7 @@
 #include "draw.h"
 
 #include "context.h"
-#include "bluaa.h"
+#include "aa.h"
 
 using namespace glm;
 
@@ -24,9 +24,6 @@ void FillerPoly::stencil(const Context * const ctx) const {
 }
 
 void Drawer::drawPath(const Drawer::SegmentList & segs, const NxColor & color) const {
-    glStencilMask(0xff);
-    glClearStencil(0);
-
     auto & fbo = m_ctx->fbo();
 
     //! start FBO bind
@@ -55,16 +52,17 @@ void Drawer::drawPath(const Drawer::SegmentList & segs, const NxColor & color) c
          1.0f, -1.0f	// bottom right corner
     };
     nsp.uploadData(quad, sizeof(quad));
-    draw0313(nsp);
+    utils::draw0313(nsp);
 
     glStencilFunc(GL_ALWAYS, 0, 0xff);
-    fbo.nextPass();
-    aaProcess(m_ctx);
+    auto aa = m_ctx->aa();
+    aa->process();
     fbo.unbind();
     //! end of FBO bind
 
+    glBindTexture(GL_TEXTURE_2D, fbo.texture());
     //antialiasing and fill to the screen
     glStencilFunc(GL_ALWAYS, 0, 0xff);
     GlColorConf cc(color);
-    m_ctx->m_fill_shader.bind(cc); draw0313(m_ctx->m_fill_shader);
+    m_ctx->m_fill_shader.bind(cc); utils::draw0313(m_ctx->m_fill_shader);
 }

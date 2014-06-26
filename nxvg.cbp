@@ -12,7 +12,6 @@
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
-					<Add option="-Weffc++" />
 					<Add option="-pedantic-errors" />
 					<Add option="-pedantic" />
 					<Add option="-g" />
@@ -42,8 +41,8 @@
 		<Linker>
 			<Add option="-lGLEW -lGL -lSDL2" />
 		</Linker>
-		<Unit filename="bluaa.cpp" />
-		<Unit filename="bluaa.h" />
+		<Unit filename="aa.cpp" />
+		<Unit filename="aa.h" />
 		<Unit filename="common.h" />
 		<Unit filename="context.cpp" />
 		<Unit filename="context.h" />
@@ -62,8 +61,16 @@
 		<Unit filename="shaders/fs_fill.glsl" />
 		<Unit filename="shaders/fs_nothing.glsl" />
 		<Unit filename="shaders/fs_quadratic.glsl" />
+		<Unit filename="shaders/fs_smaa_common.h" />
+		<Unit filename="shaders/fs_smaa_edgedet.glsl" />
+		<Unit filename="shaders/fs_smaa_neighborcalc.glsl" />
+		<Unit filename="shaders/fs_smaa_weightcalc.glsl" />
 		<Unit filename="shaders/vs_pos.glsl" />
 		<Unit filename="shaders/vs_postex.glsl" />
+		<Unit filename="shaders/vs_smaa.glsl" />
+		<Unit filename="vendor/smaa/SMAA.hlsl" />
+		<Unit filename="vendor/smaa/Textures/AreaTex.h" />
+		<Unit filename="vendor/smaa/Textures/SearchTex.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

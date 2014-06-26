@@ -37,31 +37,29 @@ int main(int argc, char* argv[]){
     // ... can be used alongside SDL2.
     SDL_Event e;
 
-    glClearColor(1,1,1,1);          // Draw with OpenGL.
-    glClear(GL_COLOR_BUFFER_BIT);
-
-//    GLfloat pts2[] = {
-//        -0.6f, -0.2f,
-//        -0.2f, 0.5f,
-//        -0.5f, -0.9f
-//    };
-//
-//    int segs2[] = {NX_LINE};
-//    nxvgDrawPath(nx, pts2, segs2, 1, nxvgColor(1, 1, 1, 1));
-
-
-    GLfloat pts[] = {
-        -0.2f, -0.2f,
-        0.f, 0.5f,
-        0.3f, -0.23f,
-        0.0f, 0.3f,
-        -0.2f, -0.3f
-    };
-
-    int segs[] = {NX_QUADRATIC, NX_QUADRATIC};
-    nxvgDrawPath(nx, pts, segs, 2, nxvgColor(1, 0, 0, 1));
-
+    //    GLfloat pts2[] = {
+    //        -0.6f, -0.2f,
+    //        -0.2f, 0.5f,
+    //        -0.5f, -0.9f
+    //    };
+    //
+    //    int segs2[] = {NX_LINE};
+    //    nxvgDrawPath(nx, pts2, segs2, 1, nxvgColor(1, 1, 1, 1));
     while(e.type!=SDL_KEYDOWN && e.type!=SDL_QUIT){  // Enter main loop.
+
+        glClearColor(0,0,0,1);          // Draw with OpenGL.
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        GLfloat pts[] = {
+            -0.2f, -0.2f,
+            0.f, 0.5f,
+            0.3f, -0.5f,
+            0.0f, 0.3f,
+            -0.2f, -0.8f
+        };
+
+        int segs[] = {NX_QUADRATIC, NX_QUADRATIC};
+        nxvgDrawPath(nx, pts, segs, 1, nxvgColor(1, 0, 0, 1));
 
         SDL_PollEvent(&e);      // Check for events.
 

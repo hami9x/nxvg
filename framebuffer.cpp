@@ -13,8 +13,11 @@ void Framebuffer::activateBuffer(int i) {
 }
 
 void Framebuffer::nextPass() {
-    glBindTexture(GL_TEXTURE_2D, m_texs[m_current]);
+    //glBindTexture(GL_TEXTURE_2D, m_texs[m_current]);
     activateBuffer(1-m_current);
+}
+
+Framebuffer::Framebuffer(): m_w(0), m_h(0), m_current(0) {
 }
 
 Framebuffer::Framebuffer(int w, int h):
@@ -37,9 +40,10 @@ Framebuffer::Framebuffer(int w, int h):
         // Give an empty image to OpenGL ( the last "0" )
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
-        // Poor filtering. Needed !
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
 
         //
         GLuint depthrenderbuffer;
@@ -65,20 +69,25 @@ Framebuffer::Framebuffer(int w, int h):
 }
 
 void Framebuffer::unbind() const {
-    glBindTexture(GL_TEXTURE_2D, m_texs[m_current]);
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
     glBindRenderbuffer(GL_RENDERBUFFER, 0);
-    glEnable(GL_BLEND);
 }
 
 void Framebuffer::bind() {
-    glDisable(GL_BLEND);
+    glBindTexture(GL_TEXTURE_2D, m_texs[m_current]);
     activateBuffer(m_current);
 }
 
 void Framebuffer::clear() {
-    activateBuffer(m_current);
-    glClearColor(0, 0, 0, 0);
-    glClear(GL_COLOR_BUFFER_BIT);
+    for (unsigned i = 0; i<2; i++) {
+        activateBuffer(i);
+
+        glStencilMask(~0);
+        glClearStencil(0);
+        glClear(GL_STENCIL_BUFFER_BIT);
+        glClearColor(0, 0, 0, 0);
+        glClear(GL_COLOR_BUFFER_BIT);
+    }
+    activateBuffer(0);
     unbind();
 }

@@ -3,6 +3,7 @@
 #include "nxvg.h"
 #include "shader.h"
 #include "framebuffer.h"
+#include "aa.h"
 #include "draw.h"
 
 class GlColorConf: public ShaderConf {
@@ -27,20 +28,27 @@ class Context {
     Framebuffer m_fbo;
     const GlResoConf m_reso_conf;
     const Drawer m_drawer;
+    SMAA m_aa;
 
 public:
     Context(int rx, int ry);
     const Program m_fill_shader;
     const Program m_quad_shader;
-    const Program m_aa_shader;
     const Program m_nothing_shader;
 
+    inline SMAA * aa() { return &m_aa; }
     inline Framebuffer & fbo() { return m_fbo; }
     inline const GlResoConf * resoConf() const { return &m_reso_conf; }
     inline const Drawer & drawer() const { return m_drawer; }
+    inline int rx() const { return m_resx; }
+    inline int ry() const { return m_resy; }
 };
 
-void uploadFullscreenQuad(const Program & sp);
-void draw0313(const Program & sp);
+namespace utils {
+    void uploadFullscreenQuad(const Program & sp);
+    void draw0313(const Program & sp);
+    void postexAttrs(const Program & sp);
+    void posAttrs(const Program & sp);
+}
 
 #endif // NXVGPRIV_H_INCLUDED

@@ -14,12 +14,14 @@ class Framebuffer {
 
 public:
     ~Framebuffer();
+    Framebuffer();
     Framebuffer(int width, int height);
 
     void bind();
     void unbind() const;
     void nextPass();
     void clear();
+    GLuint texture() const { return m_texs[m_current]; }
 };
 
 #endif

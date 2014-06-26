@@ -48,12 +48,12 @@ const std::string IMPORTDEF = "#include";
 const std::string SHADERBASE = "shaders/";
 
 void getShaderSource(std::stringstream & sstream, std::string filepath) {
-    std::ifstream sourceFile(SHADERBASE+filepath);
+    std::ifstream sourceFile(filepath);
     if (sourceFile) {
         for (std::string line; getline(sourceFile, line);) {
             if (line.substr(0, IMPORTDEF.size()) == IMPORTDEF) {
                 auto ifile = line.substr(IMPORTDEF.size()+2, line.size()-IMPORTDEF.size()-3);
-                getShaderSource(sstream, SHADERBASE+ifile);
+                getShaderSource(sstream, ifile);
             } else {
                 sstream << line << std::endl;
             }
@@ -71,7 +71,7 @@ GLuint loadShaderFromFile(std::string path, GLenum shaderType) {
 
     std::stringstream source;
 
-    getShaderSource(source, path);
+    getShaderSource(source, SHADERBASE+path);
     //Get shader source
     shaderString = source.str();
 
@@ -116,6 +116,7 @@ Program::Program(const char *vshader, const char *fshader): m_program(0), m_vao(
     //glBindFragDataLocation(m_program, 0, "outColor");
     glLinkProgram(m_program);
     glUseProgram(m_program);
+    printf("%s\n", fshader);
     GLCHECK("Could not use the shader.");
     glDetachShader(m_program, vertexShader);
 	glDetachShader(m_program, fragmentShader);

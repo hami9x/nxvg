@@ -8,11 +8,12 @@ void main()
 {
 	vec4 texc = texture2D(tex, _texcoord);
 
-    if (texc.a > 0) {
-        gl_FragColor = vec4(color.rgb, smoothstep(0.75, 0.84, texc.a));
+    if (texc != vec4(0) && color.r != 0) {
+        gl_FragColor = texc;
         //gl_FragColor = vec4(color.rgb, smoothstep(0, 1, texc.a));
-        //gl_FragColor = vec4(color.rgb, texc.a);
+        //gl_FragColor = color;
 	} else {
         discard;
     }
+    //gl_FragColor = color.r/color.r*texc;
 }
