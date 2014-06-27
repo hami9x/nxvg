@@ -10,7 +10,5 @@ uniform sampler2D tex;
 
 void main() {
     //outColor = vec4(1, 0, 0, 1);
-    outColor.rg = SMAALumaEdgeDetectionPS(_texcoord, _offset, tex).xy;
-    outColor.a = 1;
-    //outColor = texture2D(tex, _texcoord);
+    outColor.rg = SMAAColorEdgeDetectionPS(_texcoord, _offset, tex).xy;
 }

@@ -51,15 +51,15 @@ int main(int argc, char* argv[]){
         glClear(GL_COLOR_BUFFER_BIT);
 
         GLfloat pts[] = {
-            -0.2f, -0.2f,
+            -0.4f, -0.3f,
             0.f, 0.5f,
-            0.3f, -0.5f,
+            0.6f, -0.8f,
             0.0f, 0.3f,
-            -0.2f, -0.8f
+            -0.2f, -0.5f
         };
 
         int segs[] = {NX_QUADRATIC, NX_QUADRATIC};
-        nxvgDrawPath(nx, pts, segs, 1, nxvgColor(1, 0, 0, 1));
+        nxvgDrawPath(nx, pts, segs, 2, nxvgColor(1, 0, 0, 1));
 
         SDL_PollEvent(&e);      // Check for events.
 

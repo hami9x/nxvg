@@ -6,6 +6,7 @@ in vec2 texcoord;
 out vec2 _texcoord;
 out vec2 _pos;
 out vec4 _offset[3];
+out vec4 _soffset;
 out vec2 _pixcoord;
 uniform int mode;
 
@@ -19,7 +20,7 @@ void main()
     } else if (mode == 1) {
         SMAABlendingWeightCalculationVS(texcoord, _pixcoord, _offset);
     } else if (mode == 2) {
-        SMAANeighborhoodBlendingVS(texcoord, _offset[0]);
+        SMAANeighborhoodBlendingVS(texcoord, _soffset);
     }
 }
 
